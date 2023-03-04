@@ -1,0 +1,172 @@
+
+{% if product.available %}
+  <div class="custom_product_container page-width">
+      <div class="custom_product_gallery">
+        
+          <div class="product_image">
+            <img src="{{ product.featured_image | img_url:'1080x' }}">
+          </div>
+
+          <div class="product_thumbnail_image">
+            
+            {% for image in product.images %}
+              {{ image | image_url: width:"200" | image_tag: class:"product_thumbnail_image" }}
+            {% endfor %}
+  
+          </div>
+      </div>
+
+      <div class="custom_product_details">
+          <h2>{{ product.title }}</h2>
+        
+      <div class="price--on-sale product_price_container ">
+        <span class="price-item--regular">{{ product.compare_at_price | money_without_trailing_zeros }}</span>
+        <span>{{ product.price | money }}</span>
+      </div>
+
+       <div class="product_variants" >
+
+         {% for option in product.options_with_values %}
+           <h2 name="{{ option.name | handleize }}">{{ option.name }}</h2>
+         <select name="id">
+         {% for optionValues in  option.values %}
+             <option value="{{ optionValues }}">{{ optionValues }}</option>
+        {% endfor %}
+            </select>
+         {% endfor %}
+  
+       </div>
+
+          {%- form 'product', product, data-productid: product.id, id: product_form_installment_id, class: 'installment caption-large' -%}
+                  <input type="hidden" name="id" data-productid="{{ product.id }}" value="{{ product.selected_or_first_available_variant.id }}">
+
+        <input type="text" name="quantity" min="1" value="1">
+
+          <input type="submit" value="Add to cart">
+          {{ form | payment_button }}
+                  {{ form | payment_terms }}
+                {%- endform -%}
+        
+      </div>
+  </div>
+
+{% endif %}s
+
+
+
+
+<script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+<predictive-search>
+  <form action="{{ routes.search_url }}" method="get" role="search">
+    <label for="Search">Search</label>
+    <input
+      id="Search"
+      type="search"
+      name="q"
+      value="{{ search.terms | escape }}"
+      role="combobox"
+      aria-expanded="false"
+      aria-owns="predictive-search-results"
+      aria-controls="predictive-search-results"
+      aria-haspopup="listbox"
+      aria-autocomplete="list"
+    >
+    <input name="options[prefix]" type="hidden" value="last">
+
+    <div id="predictive-search" tabindex="-1"></div>
+  </form>
+</predictive-search>
+
+
+
+
+
+<style>
+.custom_product_container{
+  display: flex;
+  gap: 20px;
+}
+
+.custom_product_container .custom_product_gallery,
+.custom_product_container .custom_product_details{
+  width: 49%;
+}
+
+.custom_product_gallery .product_image img{
+  max-width: 100%;
+}  
+
+{% comment %}
+
+availabel
+collections
+
+comapare_at_price
+comapare_at_price_max
+comapare_at_price_min
+comapare_at_price_varies (Boolean value)
+price
+price_max
+price_min
+price_varies(Booleab Value)
+
+has_default_variant_availabel
+options
+options_by_name[]
+options_with_values 
+first_availabel_variant
+selected_or_first_availabel_variant
+
+featured_image
+image
+featured_media
+title
+type
+url
+vendor
+handle
+
+
+{% endcomment %}
+
+
+
+  
+  
+</style>
+<!-- 
+<script>
+   $('.product_image').slick({
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  arrows: false,
+  fade: true,
+  asNavFor: '.product_thumbnail_image'
+});
+$('.product_thumbnail_image').slick({
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  asNavFor: '.product_thumbnail_image',
+  dots: true,
+  centerMode: true,
+  focusOnSelect: true
+});
+</script> -->
+
+{% schema %}
+  {
+    "name": "Custom Product",
+    "settings": [],
+    "presets":[
+      {
+        "name":"Custom Product"
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
